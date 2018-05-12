@@ -1,0 +1,18 @@
+
+# MAPLEMINI_F303CC board
+# Support: Serial2 (USART2 on PA3, PA2) and Serial3 (USART3 on PB11, PB10)
+Maple.menu.pnum.MAPLEMINI_F303CC=Maple Mini F303CC
+Maple.menu.pnum.MAPLEMINI_F303CC.upload.maximum_size=262144
+Maple.menu.pnum.MAPLEMINI_F303CC.upload.maximum_data_size=40960
+Maple.menu.pnum.MAPLEMINI_F303CC.build.mcu=cortex-m4
+Maple.menu.pnum.MAPLEMINI_F303CC.build.board=MAPLEMINI_F303CC
+Maple.menu.pnum.MAPLEMINI_F303CC.build.series=STM32F3xx
+Maple.menu.pnum.MAPLEMINI_F303CC.build.product_line=STM32F303xC
+Maple.menu.pnum.MAPLEMINI_F303CC.build.variant=MAPLEMINI_F303CC
+Maple.menu.pnum.MAPLEMINI_F303CC.build.cmsis_lib_gcc=arm_cortexM4l_math
+
+# Upload menu
+Maple.menu.upload_method.mapleMethod=DFU
+Maple.menu.upload_method.mapleMethod.upload.protocol=maple_dfu
+Maple.menu.upload_method.mapleMethod.upload.tool=dfu_upload
+

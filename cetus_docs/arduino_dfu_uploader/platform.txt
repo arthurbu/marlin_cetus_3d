@@ -1,0 +1,12 @@
+
+# MAPLE DFU
+tools.dfu_upload.cmd=dfu_upload
+tools.dfu_upload.cmd.windows=dfu_upload.bat
+tools.dfu_upload.cmd.macosx=dfu_upload
+tools.dfu_upload.path={runtime.tools.STM32Tools.path}/tools/win
+tools.dfu_upload.path.macosx={runtime.tools.STM32Tools.path}/tools/macosx
+tools.dfu_upload.path.linux={runtime.tools.STM32Tools.path}/tools/linux
+tools.dfu_upload.path.linux64={runtime.tools.STM32Tools.path}/tools/linux64
+tools.dfu_upload.upload.params.verbose=-d
+tools.dfu_upload.upload.params.quiet=n
+tools.dfu_upload.upload.pattern="{path}/{cmd}" {dfu.port.file} "{build.path}/{build.project_name}.hex"
