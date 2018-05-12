@@ -341,6 +341,8 @@
   #include "pins_STM32F1R.h"          // STM32F1                                    env:STM32F1
 #elif MB(STM3R_MINI)
   #include "pins_STM3R_MINI.h"        // STM32F1                                    env:STM32F1
+#elif MB(CETUS3D)
+  #include "pins_CETUS3D.h"
 #elif MB(MALYAN_M200)
   #include "pins_MALYAN_M200.h"       // STM32F1                                    env:STM32F1
 #elif MB(BEAST)
