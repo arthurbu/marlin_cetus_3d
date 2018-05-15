@@ -60,19 +60,16 @@
 #include "../module/planner.h"
 #include "../module/stepper.h"
 #include "../Marlin.h"
+#include "../HAL/Delay.h"
 
 static uint8_t LEDs[8] = { 0 };
 
 #ifdef CPU_32_BIT
   // Approximate a 1µs delay on 32-bit ARM
-  void SIG_DELAY() {
-    int16_t delay_cycles = CYCLES_PER_MICROSECOND - 10;
-    while (delay_cycles >= 10) { DELAY_NOPS(6); delay_cycles -= 10; }
-    if (delay_cycles > 0) DELAY_NOPS(delay_cycles);
-  }
+  #define SIG_DELAY() DELAY_US(1)
 #else
   // Delay for 0.1875µs (16MHz AVR) or 0.15µs (20MHz AVR)
-  #define SIG_DELAY() DELAY_3_NOP
+  #define SIG_DELAY() DELAY_NS(188)
 #endif
 
 void Max7219_PutByte(uint8_t data) {
@@ -350,8 +347,8 @@ void Max7219_idle_tasks() {
       NOMORE(current_depth, 16);        // if the BLOCK_BUFFER_SIZE is greater than 16, two lines
                                         // of LEDs is enough to see if the buffer is draining
 
-      const uint8_t st = min(current_depth, last_depth),
-                    en = max(current_depth, last_depth);
+      const uint8_t st = MIN(current_depth, last_depth),
+                    en = MAX(current_depth, last_depth);
       if (current_depth < last_depth)
         for (uint8_t i = st; i <= en; i++)   // clear the highest order LEDs
           Max7219_LED_Off(MAX7219_DEBUG_STEPPER_QUEUE + (i & 1), i / 2);

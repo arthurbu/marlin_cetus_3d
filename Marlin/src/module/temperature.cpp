@@ -30,12 +30,13 @@
 #include "../lcd/ultralcd.h"
 #include "planner.h"
 #include "../core/language.h"
+#include "../HAL/Delay.h"
 
 #if ENABLED(HEATER_0_USES_MAX6675)
   #include "../libs/private_spi.h"
 #endif
 
-#if ENABLED(BABYSTEPPING)
+#if ENABLED(BABYSTEPPING) || ENABLED(PID_EXTRUSION_SCALING)
   #include "stepper.h"
 #endif
 
@@ -681,14 +682,14 @@ float Temperature::get_pid_output(const int8_t e) {
         #if ENABLED(PID_EXTRUSION_SCALING)
           cTerm[HOTEND_INDEX] = 0;
           if (_HOTEND_TEST) {
-            long e_position = stepper.position(E_AXIS);
+            const long e_position = stepper.position(E_AXIS);
             if (e_position > last_e_position) {
               lpq[lpq_ptr] = e_position - last_e_position;
               last_e_position = e_position;
             }
-            else {
+            else
               lpq[lpq_ptr] = 0;
-            }
+
             if (++lpq_ptr >= lpq_len) lpq_ptr = 0;
             cTerm[HOTEND_INDEX] = (lpq[lpq_ptr] * planner.steps_to_mm[E_AXIS]) * PID_PARAM(Kc, HOTEND_INDEX);
             pid_output += cTerm[HOTEND_INDEX];
@@ -810,8 +811,8 @@ void Temperature::manage_heater() {
   updateTemperaturesFromRawValues(); // also resets the watchdog
 
   #if ENABLED(HEATER_0_USES_MAX6675)
-    if (current_temperature[0] > min(HEATER_0_MAXTEMP, MAX6675_TMAX - 1.0)) max_temp_error(0);
-    if (current_temperature[0] < max(HEATER_0_MINTEMP, MAX6675_TMIN + .01)) min_temp_error(0);
+    if (current_temperature[0] > MIN(HEATER_0_MAXTEMP, MAX6675_TMAX - 1.0)) max_temp_error(0);
+    if (current_temperature[0] < MAX(HEATER_0_MINTEMP, MAX6675_TMIN + .01)) min_temp_error(0);
   #endif
 
   #if WATCH_HOTENDS || WATCH_THE_BED || DISABLED(PIDTEMPBED) || HAS_AUTO_FAN || HEATER_IDLE_HANDLER
@@ -844,7 +845,7 @@ void Temperature::manage_heater() {
 
     #if ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
       // Make sure measured temperatures are close together
-      if (FABS(current_temperature[0] - redundant_temperature) > MAX_REDUNDANT_TEMP_SENSOR_DIFF)
+      if (ABS(current_temperature[0] - redundant_temperature) > MAX_REDUNDANT_TEMP_SENSOR_DIFF)
         _temp_error(0, PSTR(MSG_REDUNDANCY), PSTR(MSG_ERR_REDUNDANT_TEMP));
     #endif
 
@@ -1009,6 +1010,8 @@ float Temperature::analog2temp(const int raw, const uint8_t e) {
     const short(*tt)[][2] = (short(*)[][2])(heater_ttbl_map[e]);
     SCAN_THERMISTOR_TABLE((*tt), heater_ttbllen_map[e]);
   #endif
+
+  return 0;
 }
 
 #if HAS_HEATED_BED
@@ -1094,7 +1097,7 @@ void Temperature::updateTemperaturesFromRawValues() {
    * a return value of 1.
    */
   int8_t Temperature::widthFil_to_size_ratio() {
-    if (FABS(filament_width_nominal - filament_width_meas) <= FILWIDTH_ERROR_MARGIN)
+    if (ABS(filament_width_nominal - filament_width_meas) <= FILWIDTH_ERROR_MARGIN)
       return int(100.0 * filament_width_nominal / filament_width_meas) - 100;
     return 0;
   }
@@ -1123,7 +1126,9 @@ void Temperature::init() {
     inited = true;
   #endif
 
-  #if MB(RUMBA) && (TEMP_SENSOR_0 == -1 || TEMP_SENSOR_1 == -1 || TEMP_SENSOR_2 == -1 || TEMP_SENSOR_BED == -1 || TEMP_SENSOR_CHAMBER == -1)
+  #if MB(RUMBA) && ( \
+       ENABLED(HEATER_0_USES_AD595)  || ENABLED(HEATER_1_USES_AD595)  || ENABLED(HEATER_2_USES_AD595)  || ENABLED(HEATER_3_USES_AD595)  || ENABLED(HEATER_4_USES_AD595)  || ENABLED(HEATER_BED_USES_AD595)  || ENABLED(HEATER_CHAMBER_USES_AD595) \
+    || ENABLED(HEATER_0_USES_AD8495) || ENABLED(HEATER_1_USES_AD8495) || ENABLED(HEATER_2_USES_AD8495) || ENABLED(HEATER_3_USES_AD8495) || ENABLED(HEATER_4_USES_AD8495) || ENABLED(HEATER_BED_USES_AD8495) || ENABLED(HEATER_CHAMBER_USES_AD8495))
     // Disable RUMBA JTAG in case the thermocouple extension is plugged on top of JTAG connector
     MCUCR = _BV(JTD);
     MCUCR = _BV(JTD);
@@ -1627,7 +1632,7 @@ void Temperature::disable_all_heaters() {
 
     WRITE(MAX6675_SS, 0); // enable TT_MAX6675
 
-    DELAY_100NS;          // Ensure 100ns delay
+    DELAY_NS(100);       // Ensure 100ns delay
 
     // Read a big-endian temperature value
     max6675_temp = 0;
