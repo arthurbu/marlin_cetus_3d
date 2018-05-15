@@ -54,48 +54,109 @@ volatile uint8_t e_hit = 0; // Different from 0 when the endstops should be test
 
 // This is what is really done inside the interrupts.
 FORCE_INLINE void endstop_ISR_worker( void ) {
-  e_hit = 2; // Because the detection of a e-stop hit has a 1 step debouncer it has to be called at least twice.
+  e_hit = 6; // Because the detection of a e-stop hit has a 1 step debouncer it has to be called at least twice.
 }
 
 // One ISR for all EXT-Interrupts
 void endstop_ISR(void) { endstop_ISR_worker(); }
 
-void setup_endstop_interrupts(void) {
-  #if HAS_X_MAX
-    SET_INPUT(X_MAX_PIN);
-    attachInterrupt(X_MAX_PIN, endstop_ISR, CHANGE); // assign it
-  #endif
-  #if HAS_X_MIN
-    SET_INPUT(X_MIN_PIN);
-    attachInterrupt(X_MIN_PIN, endstop_ISR, CHANGE);
-  #endif
-  #if HAS_Y_MAX
-    SET_INPUT(Y_MAX_PIN);
-    attachInterrupt(Y_MAX_PIN, endstop_ISR, CHANGE);
-  #endif
-  #if HAS_Y_MIN
-    SET_INPUT(Y_MIN_PIN);
-    attachInterrupt(Y_MIN_PIN, endstop_ISR, CHANGE);
-  #endif
-  #if HAS_Z_MAX
-    SET_INPUT(Z_MAX_PIN);
-    attachInterrupt(Z_MAX_PIN, endstop_ISR, CHANGE);
-  #endif
-  #if HAS_Z_MIN
-    SET_INPUT(Z_MIN_PIN);
-    attachInterrupt(Z_MIN_PIN, endstop_ISR, CHANGE);
-  #endif
+void detach_endstop_interrupts()
+{
+    detachInterrupt(X_MAX_PIN);
+    detachInterrupt(X_MIN_PIN);
+    detachInterrupt(Y_MAX_PIN);
+    detachInterrupt(Y_MIN_PIN);
+    detachInterrupt(Z_MAX_PIN);
+    detachInterrupt(Z_MIN_PIN);
+}
+
+void attach_endstop_interrupt(AxisEnum axis)
+{
+  if (axis == X_AXIS)
+  {
+      #if HAS_X_MAX
+        SET_INPUT(X_MAX_PIN);
+        attachInterrupt(X_MAX_PIN, endstop_ISR, RISING); // assign it
+      #endif
+      #if HAS_X_MIN
+        SET_INPUT(X_MIN_PIN);
+        attachInterrupt(X_MIN_PIN, endstop_ISR, RISING);
+      #endif
+  }
+  if (axis == Y_AXIS)
+  {
+      #if HAS_Y_MAX
+        SET_INPUT(Y_MAX_PIN);
+        attachInterrupt(Y_MAX_PIN, endstop_ISR, RISING);
+      #endif
+      #if HAS_Y_MIN
+        SET_INPUT(Y_MIN_PIN);
+        attachInterrupt(Y_MIN_PIN, endstop_ISR, RISING);
+      #endif
+  }
+  if (axis == Z_AXIS)
+  {
+      #if HAS_Z_MAX
+        SET_INPUT(Z_MAX_PIN);
+        attachInterrupt(Z_MAX_PIN, endstop_ISR, RISING);
+      #endif
+      #if HAS_Z_MIN
+        SET_INPUT(Z_MIN_PIN);
+        attachInterrupt(Z_MIN_PIN, endstop_ISR, RISING);
+      #endif
+  }
+  /*
   #if HAS_Z2_MAX
     SET_INPUT(Z2_MAX_PIN);
-    attachInterrupt(Z2_MAX_PIN, endstop_ISR, CHANGE);
+    attachInterrupt(Z2_MAX_PIN, endstop_ISR, RISING);
   #endif
   #if HAS_Z2_MIN
     SET_INPUT(Z2_MIN_PIN);
-    attachInterrupt(Z2_MIN_PIN, endstop_ISR, CHANGE);
+    attachInterrupt(Z2_MIN_PIN, endstop_ISR, RISING);
   #endif
   #if HAS_Z_MIN_PROBE_PIN
     SET_INPUT(Z_MIN_PROBE_PIN);
     attachInterrupt(Z_MIN_PROBE_PIN, endstop_ISR, CHANGE);
+  #endif
+  */
+}
+
+void setup_endstop_interrupts(void) {
+  #if HAS_X_MAX
+    SET_INPUT(X_MAX_PIN);
+    //attachInterrupt(X_MAX_PIN, endstop_ISR, RISING); // assign it
+  #endif
+  #if HAS_X_MIN
+    SET_INPUT(X_MIN_PIN);
+    //attachInterrupt(X_MIN_PIN, endstop_ISR, RISING);
+  #endif
+  #if HAS_Y_MAX
+    SET_INPUT(Y_MAX_PIN);
+    //attachInterrupt(Y_MAX_PIN, endstop_ISR, RISING);
+  #endif
+  #if HAS_Y_MIN
+    SET_INPUT(Y_MIN_PIN);
+    //attachInterrupt(Y_MIN_PIN, endstop_ISR, RISING);
+  #endif
+  #if HAS_Z_MAX
+    SET_INPUT(Z_MAX_PIN);
+    //attachInterrupt(Z_MAX_PIN, endstop_ISR, RISING);
+  #endif
+  #if HAS_Z_MIN
+    SET_INPUT(Z_MIN_PIN);
+    //attachInterrupt(Z_MIN_PIN, endstop_ISR, RISING);
+  #endif
+  #if HAS_Z2_MAX
+    SET_INPUT(Z2_MAX_PIN);
+    //attachInterrupt(Z2_MAX_PIN, endstop_ISR, RISING);
+  #endif
+  #if HAS_Z2_MIN
+    SET_INPUT(Z2_MIN_PIN);
+    //attachInterrupt(Z2_MIN_PIN, endstop_ISR, RISING);
+  #endif
+  #if HAS_Z_MIN_PROBE_PIN
+    SET_INPUT(Z_MIN_PROBE_PIN);
+    //attachInterrupt(Z_MIN_PROBE_PIN, endstop_ISR, CHANGE);
   #endif
 }
 

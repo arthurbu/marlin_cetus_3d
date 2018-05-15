@@ -1166,7 +1166,12 @@ HAL_STEP_TIMER_ISR {
 
 void Stepper::isr() {
 
-  #define ENDSTOP_NOMINAL_OCR_VAL 1500 * HAL_TICKS_PER_US // Check endstops every 1.5ms to guarantee two stepper ISRs within 5ms for BLTouch
+    //TOGGLE(LED_PIN);
+
+
+  //4 razy na 1mS
+  #define ENDSTOP_NOMINAL_OCR_VAL 300 * HAL_TICKS_PER_US // Check endstops every 1.5ms to guarantee two stepper ISRs within 5ms for BLTouch
+//	#define ENDSTOP_NOMINAL_OCR_VAL 1500 * HAL_TICKS_PER_US // Check endstops every 1.5ms to guarantee two stepper ISRs within 5ms for BLTouch
   #define OCR_VAL_TOLERANCE        500 * HAL_TICKS_PER_US // First max delay is 2.0ms, last min delay is 0.5ms, all others 1.5ms
 
   hal_timer_t ocr_val;
@@ -1186,7 +1191,11 @@ void Stepper::isr() {
   if (step_remaining) {
 
     // Make sure endstops are updated
-    if (ENDSTOPS_ENABLED) endstops.update();
+    if (ENDSTOPS_ENABLED) {
+        endstops.update();
+//        e_hit--;
+
+    }
 
     // Next ISR either for endstops or stepping
     ocr_val = step_remaining <= ENDSTOP_NOMINAL_OCR_VAL ? step_remaining : ENDSTOP_NOMINAL_OCR_VAL;
@@ -1197,7 +1206,8 @@ void Stepper::isr() {
       HAL_timer_restrain(STEP_TIMER_NUM, STEP_TIMER_MIN_INTERVAL * HAL_TICKS_PER_US);
     #endif
 
-    return;
+	  //OUT_WRITE(LED_PIN, LOW);
+	  return;
   }
 
   //
@@ -1316,10 +1326,11 @@ void Stepper::isr() {
 
   // Update endstops state, if enabled
   #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
-    if (e_hit && ENDSTOPS_ENABLED) {
+/*    if (e_hit && ENDSTOPS_ENABLED) {
       endstops.update();
+        TOGGLE(LED_PIN);
       e_hit--;
-    }
+    }*/
   #else
     if (ENDSTOPS_ENABLED) endstops.update();
   #endif
@@ -2066,6 +2077,8 @@ void Stepper::endstop_triggered(const AxisEnum axis) {
 
   kill_current_block();
   cleaning_buffer_counter = -1; // Discard the rest of the move
+
+  //OUT_WRITE(LED_PIN, HIGH);
 }
 
 void Stepper::report_positions() {

@@ -333,6 +333,7 @@ void Endstops::M119() {
 
 // Check endstops - Called from ISR!
 void Endstops::update() {
+    return;
 
   #define _ENDSTOP(AXIS, MINMAX) AXIS ##_## MINMAX
   #define _ENDSTOP_PIN(AXIS, MINMAX) AXIS ##_## MINMAX ##_PIN
@@ -673,7 +674,7 @@ void Endstops::update() {
         if (TEST(endstop_change, Z2_MAX)) SERIAL_PROTOCOLPAIR("  Z2_MAX:", TEST(current_endstop_bits_local, Z2_MAX));
       #endif
       SERIAL_PROTOCOLPGM("\n\n");
-      analogWrite(LED_PIN, local_LED_status);
+      //analogWrite(LED_PIN, local_LED_status);
       local_LED_status ^= 255;
       old_endstop_bits_local = current_endstop_bits_local;
     }

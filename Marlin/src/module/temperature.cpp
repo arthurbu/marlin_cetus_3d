@@ -41,8 +41,10 @@
 #endif
 
 #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE) || ENABLED(PINS_DEBUGGING)
-  #include "endstops.h"
+  //#include "endstops.h"
 #endif
+//zmienione
+  #include "endstops.h"
 
 #include "printcounter.h"
 
@@ -713,6 +715,7 @@ float Temperature::get_pid_output(const int8_t e) {
       SERIAL_ECHO_START();
       SERIAL_ECHOPAIR(MSG_PID_DEBUG, HOTEND_INDEX);
       SERIAL_ECHOPAIR(MSG_PID_DEBUG_INPUT, current_temperature[HOTEND_INDEX]);
+      SERIAL_ECHOPAIR(MSG_PID_DEBUG_INPUT, target_temperature[HOTEND_INDEX]);
       SERIAL_ECHOPAIR(MSG_PID_DEBUG_OUTPUT, pid_output);
       SERIAL_ECHOPAIR(MSG_PID_DEBUG_PTERM, pTerm[HOTEND_INDEX]);
       SERIAL_ECHOPAIR(MSG_PID_DEBUG_ITERM, iTerm[HOTEND_INDEX]);
@@ -1718,12 +1721,23 @@ void Temperature::set_current_temp_raw() {
  *  - For PINS_DEBUGGING, monitor and report endstop pins
  *  - For ENDSTOP_INTERRUPTS_FEATURE check endstops if flagged
  */
+
+volatile uint8_t temp_isr = 10;
+
 HAL_TEMP_TIMER_ISR {
   HAL_timer_isr_prologue(TEMP_TIMER_NUM);
 
-  Temperature::isr();
+  //co 10 wywo³añ uruchamiaj ISR od temperatury
+  if (!(--temp_isr))
+  {
+    temp_isr = 10;
+    Temperature::isr();
 
-  HAL_timer_isr_epilogue(TEMP_TIMER_NUM);
+
+    if (endstops.enabled) {
+
+    }
+  }
 }
 
 void Temperature::isr() {
@@ -2247,7 +2261,7 @@ void Temperature::isr() {
 
     if (e_hit && ENDSTOPS_ENABLED) {
       endstops.update();  // call endstop update routine
-      e_hit--;
+      //e_hit--;
     }
   #endif
 }
@@ -2344,6 +2358,7 @@ void Temperature::isr() {
     #if HAS_HEATED_BED
       SERIAL_PROTOCOLPGM_P(port, " B@:");
       SERIAL_PROTOCOL_P(port, getHeaterPower(-1));
+      SERIAL_PROTOCOLPGM_P(port, " B@:");
     #endif
     #if HOTENDS > 1
       HOTEND_LOOP() {

@@ -176,6 +176,7 @@ static void NVIC_SetPriorityGrouping(uint32_t PriorityGroup) {
 // --------------------------------------------------------------------------
 
 void HAL_init(void) {
+  SET_OUTPUT(LED_PIN);
   NVIC_SetPriorityGrouping(0x3);
 }
 
