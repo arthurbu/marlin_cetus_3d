@@ -9,6 +9,7 @@ echo %mypath%
 
 IF %ERRORLEVEL% NEQ 0 (
   rem error 1
+  pause
   exit /b 1
 )
 
@@ -16,6 +17,7 @@ IF %ERRORLEVEL% NEQ 0 (
 
 IF %ERRORLEVEL% NEQ 0 (
   rem error 2
+  pause
   exit /b 1
 )
 

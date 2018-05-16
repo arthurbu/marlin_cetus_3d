@@ -9,7 +9,7 @@
 			<Target title="Release">
 				<Option type="4" />
 				<Option compiler="null" />
-				<Option host_application="D:/Marlin/Marlin/CodeBlocksBuild.bat" />
+				<Option host_application="Build.bat" />
 				<Option run_host_application_in_terminal="0" />
 				<Script file="AB" />
 			</Target>
