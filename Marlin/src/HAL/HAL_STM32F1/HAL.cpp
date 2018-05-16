@@ -34,6 +34,8 @@
 #include "HAL.h"
 #include <STM32ADC.h>
 
+#include <libmaple/systick.h>
+
 // --------------------------------------------------------------------------
 // Externals
 // --------------------------------------------------------------------------
@@ -175,9 +177,40 @@ static void NVIC_SetPriorityGrouping(uint32_t PriorityGroup) {
 // Public functions
 // --------------------------------------------------------------------------
 
+void endstop_systick_callback(void);
+
+extern "C" {
+
+    extern volatile uint32 systick_uptime_millis;
+
+    void __exc_systick(void) {
+        static int divider = 0;
+        if (!(++divider%4)) {
+            systick_uptime_millis++;
+        }
+        endstop_systick_callback();
+    }
+
+}
+
 void HAL_init(void) {
   SET_OUTPUT(LED_PIN);
   NVIC_SetPriorityGrouping(0x3);
+
+  //4 razy szybciej
+  systick_init((F_CPU/4000) - 1);
+
+  /*
+  int m = millis();
+  while (1) {
+    WRITE(LED_PIN, HIGH);
+    while (millis() < m + 1000);
+    m = millis();
+    WRITE(LED_PIN, LOW);
+    while (millis() < m + 1000);
+    m = millis();
+  }
+  */
 }
 
 /* VGPV Done with defines

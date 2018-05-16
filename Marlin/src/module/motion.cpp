@@ -1048,7 +1048,7 @@ inline float get_homing_bump_feedrate(const AxisEnum axis) {
   extern volatile uint8_t e_hit;
 #endif
 volatile AxisEnum homing_axis;
- void systick_cbk(void) {
+ void endstop_systick_callback(void) {
      if (homing_axis != NO_AXIS)
      {
          e_hit--;
@@ -1116,7 +1116,6 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
   WRITE(LED_PIN, LOW);
   homing_axis = axis;
   attach_endstop_interrupt(axis);
-  systick_attach_callback(systick_cbk);
   #if IS_SCARA
     SYNC_PLAN_POSITION_KINEMATIC();
     current_position[axis] = distance;
@@ -1131,7 +1130,6 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
   planner.synchronize();
 
   homing_axis = NO_AXIS;
-  systick_attach_callback(nullptr);
   detach_endstop_interrupts();
   if (is_home_dir) {
     sync_plan_position();
