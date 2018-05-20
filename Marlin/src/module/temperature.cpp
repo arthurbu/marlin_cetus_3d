@@ -1721,23 +1721,12 @@ void Temperature::set_current_temp_raw() {
  *  - For PINS_DEBUGGING, monitor and report endstop pins
  *  - For ENDSTOP_INTERRUPTS_FEATURE check endstops if flagged
  */
-
-volatile uint8_t temp_isr = 10;
-
 HAL_TEMP_TIMER_ISR {
   HAL_timer_isr_prologue(TEMP_TIMER_NUM);
 
-  //co 10 wywo³añ uruchamiaj ISR od temperatury
-  if (!(--temp_isr))
-  {
-    temp_isr = 10;
-    Temperature::isr();
+  Temperature::isr();
 
-
-    if (endstops.enabled) {
-
-    }
-  }
+  HAL_timer_isr_epilogue(TEMP_TIMER_NUM);
 }
 
 void Temperature::isr() {

@@ -179,6 +179,8 @@ static void NVIC_SetPriorityGrouping(uint32_t PriorityGroup) {
 
 void endstop_systick_callback(void);
 
+#define HAL_TEMP_TIMER_ISR extern "C" void tempTC_Handler(void)
+
 extern "C" {
 
     extern volatile uint32 systick_uptime_millis;
@@ -187,6 +189,7 @@ extern "C" {
         static int divider = 0;
         if (!(++divider%4)) {
             systick_uptime_millis++;
+            tempTC_Handler();
         }
         endstop_systick_callback();
     }
