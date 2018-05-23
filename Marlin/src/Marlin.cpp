@@ -653,6 +653,8 @@ void setup() {
     HAL_init();
   #endif
 
+  HAL_timer_start(PWM_TIMER_NUM, PWM_TIMER_FREQUENCY);
+
   #if ENABLED(MAX7219_DEBUG)
     Max7219_init();
   #endif

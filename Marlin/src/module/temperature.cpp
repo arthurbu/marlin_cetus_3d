@@ -1230,7 +1230,7 @@ void Temperature::init() {
     // Interleave temperature interrupt with millies interrupt
     OCR0B = 128;
   #else
-    HAL_timer_start(TEMP_TIMER_NUM, TEMP_TIMER_FREQUENCY);
+    //    HAL_timer_start(TEMP_TIMER_NUM, TEMP_TIMER_FREQUENCY);
   #endif
   ENABLE_TEMPERATURE_INTERRUPT();
 
@@ -1722,11 +1722,11 @@ void Temperature::set_current_temp_raw() {
  *  - For ENDSTOP_INTERRUPTS_FEATURE check endstops if flagged
  */
 HAL_TEMP_TIMER_ISR {
-  HAL_timer_isr_prologue(TEMP_TIMER_NUM);
+  //HAL_timer_isr_prologue(TEMP_TIMER_NUM);
 
   Temperature::isr();
 
-  HAL_timer_isr_epilogue(TEMP_TIMER_NUM);
+  //HAL_timer_isr_epilogue(TEMP_TIMER_NUM);
 }
 
 void Temperature::isr() {

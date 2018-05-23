@@ -333,7 +333,6 @@ void Endstops::M119() {
 
 // Check endstops - Called from ISR!
 void Endstops::update() {
-    return;
 
   #define _ENDSTOP(AXIS, MINMAX) AXIS ##_## MINMAX
   #define _ENDSTOP_PIN(AXIS, MINMAX) AXIS ##_## MINMAX ##_PIN
@@ -450,7 +449,7 @@ void Endstops::update() {
    * Check and update endstops according to conditions
    */
   if (stepper.current_block) {
-
+/*
     if (X_MOVE_TEST) {
       if (stepper.motor_direction(X_AXIS_HEAD)) { // -direction
         #if HAS_X_MIN
@@ -516,9 +515,10 @@ void Endstops::update() {
         #endif
       }
     }
-
+*/
     if (Z_MOVE_TEST) {
       if (stepper.motor_direction(Z_AXIS_HEAD)) { // Z -direction. Gantry down, bed up.
+            /*
         #if HAS_Z_MIN
           #if ENABLED(Z_DUAL_ENDSTOPS)
             UPDATE_ENDSTOP_BIT(Z, MIN);
@@ -536,7 +536,7 @@ void Endstops::update() {
             #endif
           #endif
         #endif
-
+*/
         // When closing the gap check the enabled probe
         #if ENABLED(Z_MIN_PROBE_ENDSTOP)
           if (z_probe_enabled) {
@@ -546,6 +546,7 @@ void Endstops::update() {
         #endif
       }
       else { // Z +direction. Gantry up, bed down.
+            /*
         #if HAS_Z_MAX
           // Check both Z dual endstops
           #if ENABLED(Z_DUAL_ENDSTOPS)
@@ -561,7 +562,7 @@ void Endstops::update() {
           #elif DISABLED(Z_MIN_PROBE_ENDSTOP) || Z_MAX_PIN != Z_MIN_PROBE_PIN
             UPDATE_ENDSTOP(Z, MAX);
           #endif
-        #endif
+        #endif)*/
       }
     }
 

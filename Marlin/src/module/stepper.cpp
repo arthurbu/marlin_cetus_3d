@@ -1326,11 +1326,9 @@ void Stepper::isr() {
 
   // Update endstops state, if enabled
   #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
-/*    if (e_hit && ENDSTOPS_ENABLED) {
+    if (ENDSTOPS_ENABLED) {
       endstops.update();
-        TOGGLE(LED_PIN);
-      e_hit--;
-    }*/
+    }
   #else
     if (ENDSTOPS_ENABLED) endstops.update();
   #endif

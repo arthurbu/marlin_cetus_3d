@@ -185,11 +185,22 @@ extern "C" {
 
     extern volatile uint32 systick_uptime_millis;
 
+    bool temp_irq_enabled = false;
+
+    void temp_irq_enable() {
+        temp_irq_enabled = true;
+    }
+    void temp_irq_disable() {
+        temp_irq_enabled = false;
+    }
+
     void __exc_systick(void) {
         static int divider = 0;
         if (!(++divider%4)) {
             systick_uptime_millis++;
-            tempTC_Handler();
+
+            if (temp_irq_enabled)
+                tempTC_Handler();
         }
         endstop_systick_callback();
     }
@@ -197,7 +208,10 @@ extern "C" {
 }
 
 void HAL_init(void) {
+
   SET_OUTPUT(LED_PIN);
+  SET_OUTPUT(25);
+
   NVIC_SetPriorityGrouping(0x3);
 
   //4 razy szybciej

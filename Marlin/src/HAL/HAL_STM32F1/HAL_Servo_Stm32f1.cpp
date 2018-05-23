@@ -28,14 +28,30 @@
 #if HAS_SERVOS
 
 #include "HAL_Servo_Stm32f1.h"
+#include "HAL_timers_Stm32f1.h"
 
 int8_t libServo::attach(const int pin) {
-  if (this->servoIndex >= MAX_SERVOS) return -1;
-  return Servo::attach(pin);
+  //if (this->servoIndex >= MAX_SERVOS) return -1;
+  //HAL_timer_start(PWM_TIMER_NUM, 1000);
+  return 0;//Servo::attach(pin);
 }
 
 int8_t libServo::attach(const int pin, const int min, const int max) {
-  return Servo::attach(pin, min, max);
+  return 0;//Servo::attach(pin, min, max);
+}
+
+void libServo::detach() {
+    //
+}
+
+void libServo::write(int angle) {
+    this->pos = angle;
+    timer_set_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN + 1, (int)(43.0f+((float)(angle) * 0.757777f)));
+    timer_generate_update(PWM_TIMER_DEV);
+}
+
+int libServo::read() {
+    return this->pos;
 }
 
 void libServo::move(const int value) {

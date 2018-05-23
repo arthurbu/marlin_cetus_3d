@@ -56,6 +56,7 @@
 #define Z_DIR_PIN          8
 #define Z_ENABLE_PIN       -1
 #define Z_MIN_PIN          -1
+#define Z_MIN_PROBE_PIN    26
 #define Z_MAX_PIN          7
 //7
 
@@ -123,6 +124,12 @@
 #define TEMP_0_PIN         4   // ANALOG NUMBERING
 #define TEMP_1_PIN         -1   // ANALOG NUMBERING
 #define TEMP_2_PIN         -1   // ANALOG NUMBERING
+
+
+// BLTouch Servo
+
+#define BLTOUCH_PIN 25
+#define SERVO0_PIN BLTOUCH_PIN
 
 //
 // LCD Pins

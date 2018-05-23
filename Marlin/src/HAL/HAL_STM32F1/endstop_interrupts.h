@@ -57,8 +57,16 @@ FORCE_INLINE void endstop_ISR_worker( void ) {
   e_hit = 6; // Because the detection of a e-stop hit has a 1 step debouncer it has to be called at least twice.
 }
 
+void bltouch_callback(void);
+
+FORCE_INLINE void endstop_ISR_worker2( void ) {
+	//TOGGLE(LED_PIN, HIGH);
+    bltouch_callback();
+}
+
 // One ISR for all EXT-Interrupts
 void endstop_ISR(void) { endstop_ISR_worker(); }
+void endstop_ISR2(void) { endstop_ISR_worker2(); }
 
 void detach_endstop_interrupts()
 {
@@ -67,7 +75,7 @@ void detach_endstop_interrupts()
     detachInterrupt(Y_MAX_PIN);
     detachInterrupt(Y_MIN_PIN);
     detachInterrupt(Z_MAX_PIN);
-    detachInterrupt(Z_MIN_PIN);
+    //detachInterrupt(Z_MIN_PIN);
 }
 
 void attach_endstop_interrupt(AxisEnum axis)
@@ -99,10 +107,6 @@ void attach_endstop_interrupt(AxisEnum axis)
       #if HAS_Z_MAX
         SET_INPUT(Z_MAX_PIN);
         attachInterrupt(Z_MAX_PIN, endstop_ISR, RISING);
-      #endif
-      #if HAS_Z_MIN
-        SET_INPUT(Z_MIN_PIN);
-        attachInterrupt(Z_MIN_PIN, endstop_ISR, RISING);
       #endif
   }
   /*
@@ -144,7 +148,7 @@ void setup_endstop_interrupts(void) {
   #endif
   #if HAS_Z_MIN
     SET_INPUT(Z_MIN_PIN);
-    //attachInterrupt(Z_MIN_PIN, endstop_ISR, RISING);
+    attachInterrupt(Z_MIN_PIN, endstop_ISR2, RISING);
   #endif
   #if HAS_Z2_MAX
     SET_INPUT(Z2_MAX_PIN);
@@ -156,7 +160,7 @@ void setup_endstop_interrupts(void) {
   #endif
   #if HAS_Z_MIN_PROBE_PIN
     SET_INPUT(Z_MIN_PROBE_PIN);
-    //attachInterrupt(Z_MIN_PROBE_PIN, endstop_ISR, CHANGE);
+    attachInterrupt(Z_MIN_PROBE_PIN, endstop_ISR2, CHANGE);
   #endif
 }
 

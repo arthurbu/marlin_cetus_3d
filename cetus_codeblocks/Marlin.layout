@@ -2,14 +2,149 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="..\Marlin\Configuration.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Marlin\src\module\servo.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="23898" topLine="504" />
+			<Cursor1 position="960" topLine="6" />
 		</Cursor>
 	</File>
-	<File name="..\Marlin\src\module\motion.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Marlin\src\module\motion.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="40142" topLine="1138" />
+			<Cursor1 position="984" topLine="175" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F1\HAL_spi_Stm32f1.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1059" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\module\servo.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="987" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_DUE\HAL_timers_Due.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2751" topLine="50" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\inc\SanityCheck.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="385" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F1\HAL_timers_Stm32f1.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5132" topLine="45" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\servo.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1783" topLine="34" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F4\HAL_Servo_STM32F4.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="964" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F1\HAL_timers_Stm32f1.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3603" topLine="80" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\module\stepper.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2538" topLine="2382" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\servo.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3528" topLine="63" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F1\HAL.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8014" topLine="243" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F4\HAL_Servo_STM32F4.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="973" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\servo_private.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1951" topLine="28" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F1\HAL.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4004" topLine="125" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F1\endstop_interrupts.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2441" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\module\stepper_indirection.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1121" topLine="406" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\Marlin.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4772" topLine="184" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F4\HAL_timers_STM32F4.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2641" topLine="38" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\module\endstops.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="948" topLine="26" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_AVR\HAL.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3058" topLine="113" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F4\HAL_timers_STM32F4.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F1\HAL_Servo_Stm32f1.cpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="969" topLine="16" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\pins\pins_CETUS3D.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1664" topLine="32" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\module\temperature.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="56826" topLine="1722" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_LPC1768\HAL_timers.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2741" topLine="50" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\Configuration.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="22959" topLine="507" />
+		</Cursor>
+	</File>
+	<File name="..\Marlin\src\HAL\HAL_STM32F1\HAL_Servo_Stm32f1.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1333" topLine="3" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

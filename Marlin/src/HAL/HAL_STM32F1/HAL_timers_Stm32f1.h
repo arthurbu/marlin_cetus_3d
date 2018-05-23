@@ -54,8 +54,10 @@ typedef uint16_t hal_timer_t;
 #endif
 
 #define STEP_TIMER_CHAN 1 // Channel of the timer to use for compare and interrupts
-#define TEMP_TIMER_NUM 2  // index of timer to use for temperature
-#define TEMP_TIMER_CHAN 1 // Channel of the timer to use for compare and interrupts
+//#define TEMP_TIMER_NUM -1  // index of timer to use for temperature
+#define PWM_TIMER_NUM 2 //
+//#define TEMP_TIMER_CHAN -1 // Channel of the timer to use for compare and interrupts
+#define PWM_TIMER_CHAN 1 // Channel of the timer to use for compare and interrupts
 #define PULSE_TIMER_NUM STEP_TIMER_NUM
 
 timer_dev* get_timer_dev(int number);
@@ -64,27 +66,36 @@ timer_dev* get_timer_dev(int number);
 
 #define STEP_TIMER_DEV TIMER_DEV(STEP_TIMER_NUM)
 #define TEMP_TIMER_DEV TIMER_DEV(TEMP_TIMER_NUM)
+#define PWM_TIMER_DEV TIMER_DEV(PWM_TIMER_NUM)
 
 //STM32_HAVE_TIMER(n);
 
 #define HAL_TIMER_RATE         (F_CPU)  // frequency of timers peripherals
 #define STEPPER_TIMER_PRESCALE 18             // prescaler for setting stepper timer, 4Mhz
 #define HAL_STEPPER_TIMER_RATE (HAL_TIMER_RATE / STEPPER_TIMER_PRESCALE)   // frequency of stepper timer
-#define HAL_TICKS_PER_US       ((HAL_STEPPER_TIMER_RATE) / 1000000) // stepper timer ticks per Âµs
+#define HAL_TICKS_PER_US       ((HAL_STEPPER_TIMER_RATE) / 1000000) // stepper timer ticks per µs
 
 #define PULSE_TIMER_PRESCALE STEPPER_TIMER_PRESCALE
 
 #define TEMP_TIMER_PRESCALE     1000 // prescaler for setting Temp timer, 72Khz
 #define TEMP_TIMER_FREQUENCY    1000 // temperature interrupt frequency
 
-#define STEP_TIMER_MIN_INTERVAL    8 // minimum time in Âµs between stepper interrupts
+#define PWM_TIMER_PRESCALE     1000 // prescaler for setting Temp timer, 72Khz
+#define PWM_TIMER_FREQUENCY    50 // temperature interrupt frequency
+
+#define STEP_TIMER_MIN_INTERVAL    8 // minimum time in µs between stepper interrupts
 
 #define ENABLE_STEPPER_DRIVER_INTERRUPT() timer_enable_irq(STEP_TIMER_DEV, STEP_TIMER_CHAN)
 #define DISABLE_STEPPER_DRIVER_INTERRUPT() timer_disable_irq(STEP_TIMER_DEV, STEP_TIMER_CHAN)
 #define STEPPER_ISR_ENABLED() HAL_timer_interrupt_enabled(STEP_TIMER_NUM)
 
-#define ENABLE_TEMPERATURE_INTERRUPT() timer_enable_irq(TEMP_TIMER_DEV, TEMP_TIMER_CHAN)
-#define DISABLE_TEMPERATURE_INTERRUPT() timer_disable_irq(TEMP_TIMER_DEV, TEMP_TIMER_CHAN)
+extern "C" {
+    void temp_irq_enable();
+    void temp_irq_disable();
+}
+
+#define ENABLE_TEMPERATURE_INTERRUPT() temp_irq_enable()
+#define DISABLE_TEMPERATURE_INTERRUPT() temp_irq_disable()
 
 #define HAL_timer_get_count(timer_num) timer_get_count(TIMER_DEV(timer_num))
 
@@ -135,9 +146,12 @@ FORCE_INLINE static void HAL_timer_set_compare(const uint8_t timer_num, const ha
   case STEP_TIMER_NUM:
     timer_set_compare(STEP_TIMER_DEV, STEP_TIMER_CHAN, compare);
     return;
-  case TEMP_TIMER_NUM:
-    timer_set_compare(TEMP_TIMER_DEV, TEMP_TIMER_CHAN, compare);
+  case PWM_TIMER_NUM:
+//    timer_set_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN, compare);
     return;
+//  case TEMP_TIMER_NUM:
+//    timer_set_compare(TEMP_TIMER_DEV, TEMP_TIMER_CHAN, compare);
+//    return;
   default:
     return;
   }
@@ -147,8 +161,10 @@ FORCE_INLINE static hal_timer_t HAL_timer_get_compare(const uint8_t timer_num) {
   switch (timer_num) {
   case STEP_TIMER_NUM:
     return timer_get_compare(STEP_TIMER_DEV, STEP_TIMER_CHAN);
-  case TEMP_TIMER_NUM:
-    return timer_get_compare(TEMP_TIMER_DEV, TEMP_TIMER_CHAN);
+  case PWM_TIMER_NUM:
+    return timer_get_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN);
+//  case TEMP_TIMER_NUM:
+//    return timer_get_compare(TEMP_TIMER_DEV, TEMP_TIMER_CHAN);
   default:
     return 0;
   }
@@ -156,7 +172,7 @@ FORCE_INLINE static hal_timer_t HAL_timer_get_compare(const uint8_t timer_num) {
 
 FORCE_INLINE static void HAL_timer_restrain(const uint8_t timer_num, const uint16_t interval_ticks) {
   const hal_timer_t mincmp = HAL_timer_get_count(timer_num) + interval_ticks;
-  if (HAL_timer_get_compare(timer_num) < mincmp) HAL_timer_set_compare(timer_num, mincmp);
+  //if (HAL_timer_get_compare(timer_num) < mincmp) HAL_timer_set_compare(timer_num, mincmp);
 }
 
 FORCE_INLINE static void HAL_timer_isr_prologue(const uint8_t timer_num) {
@@ -165,10 +181,14 @@ FORCE_INLINE static void HAL_timer_isr_prologue(const uint8_t timer_num) {
     timer_set_count(STEP_TIMER_DEV, 0);
     timer_generate_update(STEP_TIMER_DEV);
     return;
-  case TEMP_TIMER_NUM:
-    timer_set_count(TEMP_TIMER_DEV, 0);
-    timer_generate_update(TEMP_TIMER_DEV);
+  case PWM_TIMER_NUM:
+    //timer_set_count(PWM_TIMER_DEV, 0);
+    //timer_generate_update(PWM_TIMER_DEV);
     return;
+//  case TEMP_TIMER_NUM:
+//    timer_set_count(TEMP_TIMER_DEV, 0);
+//    timer_generate_update(TEMP_TIMER_DEV);
+//    return;
   default:
     return;
   }

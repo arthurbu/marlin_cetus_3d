@@ -24,18 +24,27 @@
 #ifndef HAL_SERVO_STM32F1_H
 #define HAL_SERVO_STM32F1_H
 
-#include <../../libraries/Servo/src/Servo.h>
+#define MAX_SERVOS 1
+
+//#include <../../libraries/Servo/src/Servo.h>
 
 // Inherit and expand on the official library
-class libServo : public Servo {
+class libServo {
 public:
     int8_t attach(const int pin);
     int8_t attach(const int pin, const int min, const int max);
+    void detach();
     void move(const int value);
+    void write(int angle);
+    int read();                        // returns current pulse width as an angle between 0 and 180 degrees
 private:
-    uint16_t min_ticks;
-    uint16_t max_ticks;
-    uint8_t servoIndex;               // index into the channel data for this servo
+    //uint16_t min_ticks;
+    //uint16_t max_ticks;
+    //uint8_t servoIndex;               // index into the channel data for this servo
+    //uint8_t servoIndex;               // index into the channel data for this servo
+    int pos;
 };
+
+#define HAL_SERVO_LIB libServo
 
 #endif // HAL_SERVO_STM32F1_H

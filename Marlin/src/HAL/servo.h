@@ -74,16 +74,12 @@
 
 #elif defined(TARGET_LPC1768)
   #include "HAL_LPC1768/LPC1768_Servo.h"
+#elif defined(__STM32F1__)
+  #include "HAL_STM32F1/HAL_Servo_Stm32f1.h"
 #elif defined(STM32F4)
   #include "HAL_STM32F4/HAL_Servo_STM32F4.h"
-#else
+#elif defined(__AVR__) || defined(ARDUINO_ARCH_SAM)
   #include <stdint.h>
-
-  #if defined(__AVR__) || defined(ARDUINO_ARCH_SAM)
-    // we're good to go
-  #else
-    #error "This library only supports boards with an AVR or SAM3X processor."
-  #endif
 
   #define Servo_VERSION           2     // software version of this library
 

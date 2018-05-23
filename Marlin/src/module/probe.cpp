@@ -515,13 +515,15 @@ static bool do_probe_move(const float z, const float fr_mm_s) {
   do_blocking_move_to_z(z, fr_mm_s);
 
   // Check to see if the probe was triggered
-  const bool probe_triggered = TEST(Endstops::endstop_hit_bits,
+  bool probe_triggered = TEST(Endstops::endstop_hit_bits,
     #if ENABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
       Z_MIN
     #else
       Z_MIN_PROBE
     #endif
   );
+
+probe_triggered = true;
 
   #if QUIET_PROBING
     probing_pause(false);
@@ -648,6 +650,9 @@ static bool do_probe_move(const float z, const float fr_mm_s) {
  * - Return the probed Z position
  */
 float probe_pt(const float &rx, const float &ry, const ProbePtRaise raise_after/*=PROBE_PT_NONE*/, const uint8_t verbose_level/*=0*/, const bool probe_relative/*=true*/) {
+
+  WRITE(LED_PIN, LOW);
+
   #if ENABLED(DEBUG_LEVELING_FEATURE)
     if (DEBUGGING(LEVELING)) {
       SERIAL_ECHOPAIR(">>> probe_pt(", LOGICAL_X_POSITION(rx));

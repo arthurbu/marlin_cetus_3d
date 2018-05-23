@@ -1048,6 +1048,10 @@ inline float get_homing_bump_feedrate(const AxisEnum axis) {
   extern volatile uint8_t e_hit;
 #endif
 volatile AxisEnum homing_axis;
+ void bltouch_callback(void) {
+    WRITE(LED_PIN, HIGH);
+	stepper.endstop_triggered(Z_AXIS);
+ }
  void endstop_systick_callback(void) {
      if (homing_axis != NO_AXIS)
      {
