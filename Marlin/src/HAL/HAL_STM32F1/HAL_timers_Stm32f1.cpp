@@ -93,15 +93,6 @@ const tTimerConfig TimerConfig [NUM_HARDWARE_TIMERS] = {
  * TODO: Calculate Timer prescale value, so we get the 32bit to adjust
  */
 
-extern "C" void PWMTC_Handler() {
-    WRITE(BLTOUCH_PIN, HIGH);
-    timer_set_count(PWM_TIMER_DEV, 0);
-}
-
-extern "C" void PWMTC_Handler2() {
-    WRITE(BLTOUCH_PIN, LOW);
-}
-
 void HAL_timer_start(const uint8_t timer_num, const uint32_t frequency) {
   nvic_irq_num irq_num;
   switch (timer_num) {
@@ -142,16 +133,10 @@ void HAL_timer_start(const uint8_t timer_num, const uint32_t frequency) {
       timer_set_prescaler(PWM_TIMER_DEV, (uint16)(PWM_TIMER_PRESCALE - 1));
       timer_set_reload(PWM_TIMER_DEV, 0xFFFF);
       timer_set_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN, MIN(HAL_TIMER_TYPE_MAX, ((F_CPU / PWM_TIMER_PRESCALE) / frequency)));
-      timer_attach_interrupt(PWM_TIMER_DEV, PWM_TIMER_CHAN, PWMTC_Handler);
-
-      timer_set_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN + 1, 158);
-      timer_attach_interrupt(PWM_TIMER_DEV, PWM_TIMER_CHAN + 1, PWMTC_Handler2);
-
+      timer_attach_interrupt(PWM_TIMER_DEV, PWM_TIMER_CHAN, tempTC_Handler);
       nvic_irq_set_priority(irq_num, 2);
       timer_generate_update(PWM_TIMER_DEV);
       timer_resume(PWM_TIMER_DEV);
-
-      timer_enable_irq(PWM_TIMER_DEV, PWM_TIMER_CHAN);
       break;
   }
 }
@@ -159,7 +144,7 @@ void HAL_timer_start(const uint8_t timer_num, const uint32_t frequency) {
 void HAL_timer_enable_interrupt(const uint8_t timer_num) {
   switch (timer_num) {
     case STEP_TIMER_NUM: ENABLE_STEPPER_DRIVER_INTERRUPT(); break;
-    //case TEMP_TIMER_NUM: ENABLE_TEMPERATURE_INTERRUPT(); break;
+    case PWM_TIMER_NUM: ENABLE_TEMPERATURE_INTERRUPT(); break;
     default: break;
   }
 }
@@ -167,7 +152,7 @@ void HAL_timer_enable_interrupt(const uint8_t timer_num) {
 void HAL_timer_disable_interrupt(const uint8_t timer_num) {
   switch (timer_num) {
     case STEP_TIMER_NUM: DISABLE_STEPPER_DRIVER_INTERRUPT(); break;
-    //case TEMP_TIMER_NUM: DISABLE_TEMPERATURE_INTERRUPT(); break;
+    case PWM_TIMER_NUM: DISABLE_TEMPERATURE_INTERRUPT(); break;
     default: break;
   }
 }
@@ -179,7 +164,7 @@ static inline bool timer_irq_enabled(const timer_dev * const dev, const uint8 in
 bool HAL_timer_interrupt_enabled(const uint8_t timer_num) {
   switch (timer_num) {
     case STEP_TIMER_NUM: return timer_irq_enabled(STEP_TIMER_DEV, STEP_TIMER_CHAN);
-    //case TEMP_TIMER_NUM: return timer_irq_enabled(TEMP_TIMER_DEV, TEMP_TIMER_CHAN);
+    case PWM_TIMER_NUM: return timer_irq_enabled(PWM_TIMER_DEV, PWM_TIMER_CHAN);
   }
   return false;
 }

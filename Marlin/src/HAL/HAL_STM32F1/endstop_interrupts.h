@@ -51,8 +51,36 @@
 
 #include "../../module/endstops.h"
 
+volatile uint8_t e_hit;
+
+//CETUS3D
+
+volatile AxisEnum homing_axis = NO_AXIS;
+
+void bltouch_callback(void)
+{
+    //WRITE(LED_PIN, HIGH);
+    //planner.endstop_triggered(Z_AXIS);
+}
+
+void endstop_systick_callback(void)
+{
+    if (homing_axis != NO_AXIS)
+    {
+        e_hit--;
+        if (!e_hit)
+        {
+            WRITE(LED_PIN, HIGH);
+            planner.endstop_triggered(homing_axis);
+        }
+    }
+}
+
+//CETUS3D
+
+
 // One ISR for all EXT-Interrupts
-void endstop_ISR(void) { endstops.check_possible_change(); }
+void endstop_ISR(void) { e_hit = 6; }
 
 void bltouch_callback(void);
 
@@ -63,16 +91,21 @@ void endstop_ISR2(void) {
 
 void detach_endstop_interrupts()
 {
-    detachInterrupt(X_MAX_PIN);
-    detachInterrupt(X_MIN_PIN);
-    detachInterrupt(Y_MAX_PIN);
-    detachInterrupt(Y_MIN_PIN);
-    detachInterrupt(Z_MAX_PIN);
+  detachInterrupt(X_MAX_PIN);
+  detachInterrupt(X_MIN_PIN);
+  detachInterrupt(Y_MAX_PIN);
+  detachInterrupt(Y_MIN_PIN);
+  detachInterrupt(Z_MAX_PIN);
     //detachInterrupt(Z_MIN_PIN);
+
+  homing_axis = NO_AXIS;
 }
 
 void attach_endstop_interrupt(AxisEnum axis)
 {
+  homing_axis = axis;
+  WRITE(LED_PIN, LOW);
+
   if (axis == X_AXIS)
   {
       #if HAS_X_MAX

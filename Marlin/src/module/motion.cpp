@@ -59,10 +59,11 @@
   #include "../feature/fwretract.h"
 #endif
 
-#if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
-    void detach_endstop_interrupts();
-    void attach_endstop_interrupt(AxisEnum axis);
-#endif
+//CETUS3D
+void detach_endstop_interrupts();
+void attach_endstop_interrupt(AxisEnum axis);
+//CETUS3D
+
 #define XYZ_CONSTS(type, array, CONFIG) const PROGMEM type array##_P[XYZ] = { X_##CONFIG, Y_##CONFIG, Z_##CONFIG }
 
 XYZ_CONSTS(float, base_min_pos,   MIN_POS);
@@ -1047,24 +1048,6 @@ inline float get_homing_bump_feedrate(const AxisEnum axis) {
 
 #endif // SENSORLESS_HOMING
 
-#if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
-  extern volatile uint8_t e_hit;
-#endif
-volatile AxisEnum homing_axis;
- void bltouch_callback(void) {
-    WRITE(LED_PIN, HIGH);
-	stepper.endstop_triggered(Z_AXIS);
- }
- void endstop_systick_callback(void) {
-     if (homing_axis != NO_AXIS)
-     {
-         e_hit--;
-         if (!e_hit) {
-            WRITE(LED_PIN, HIGH);
-            stepper.endstop_triggered(homing_axis);
-         }
-     }
- }
 /**
  * Home an individual linear axis
  */
@@ -1120,9 +1103,6 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
   // Tell the planner the axis is at 0
   current_position[axis] = 0;
 
-  WRITE(LED_PIN, LOW);
-  homing_axis = axis;
-  attach_endstop_interrupt(axis);
   #if IS_SCARA
     SYNC_PLAN_POSITION_KINEMATIC();
     current_position[axis] = distance;
@@ -1136,10 +1116,7 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
 
   planner.synchronize();
 
-  homing_axis = NO_AXIS;
-  detach_endstop_interrupts();
   if (is_home_dir) {
-    sync_plan_position();
 
     if (axis == Z_AXIS) {
       #if HOMING_Z_WITH_PROBE
@@ -1150,24 +1127,23 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
           set_bltouch_deployed(false);
         #endif
       #endif
+      //CETUS3D
       current_position[axis] -= 5;
+      //CETUS3D
     }
 
+    //CETUS3D
     if (axis == Y_AXIS) {
       current_position[axis] += 15;
     }
     if (axis == X_AXIS) {
       current_position[axis] -= 90;
     }
-    planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], fr_mm_s ? fr_mm_s : homing_feedrate(axis), active_extruder);
+    planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], fr_mm_s ? fr_mm_s : (homing_feedrate(axis) * 2), active_extruder);
     planner.synchronize();
+    //CETUS3D
+
     endstops.hit_on_purpose();
-    if (axis == Z_AXIS) {
-    }
-    if (axis == Y_AXIS) {
-    }
-    if (axis == X_AXIS) {
-    }
 
     // Re-enable stealthChop if used. Disable diag1 pin on driver.
     #if ENABLED(SENSORLESS_HOMING)
@@ -1311,9 +1287,18 @@ void homeaxis(const AxisEnum axis) {
     #endif
     home_dir(axis);
 
+  //CETUS3D
+  attach_endstop_interrupt(axis);
+  //CETUS3D
+
   // Homing Z towards the bed? Deploy the Z probe or endstop.
   #if HOMING_Z_WITH_PROBE
-    if (axis == Z_AXIS && DEPLOY_PROBE()) return;
+    //CETUS3D
+    if (axis == Z_AXIS && DEPLOY_PROBE()) {
+        detach_endstop_interrupts();
+        return;
+    }
+    //CETUS3D
   #endif
 
   // Set flags for X, Y, Z motor locking
@@ -1433,7 +1418,12 @@ void homeaxis(const AxisEnum axis) {
 
   // Put away the Z probe
   #if HOMING_Z_WITH_PROBE
-    if (axis == Z_AXIS && STOW_PROBE()) return;
+    //CETUS3D
+    if (axis == Z_AXIS && STOW_PROBE()) {
+        detach_endstop_interrupts();
+        return;
+    }
+    //CETUS3D
   #endif
 
   // Clear z_lift if homing the Z axis
@@ -1449,6 +1439,10 @@ void homeaxis(const AxisEnum axis) {
       SERIAL_EOL();
     }
   #endif
+
+  //CETUS3D
+  detach_endstop_interrupts();
+  //CETUS3D
 } // homeaxis()
 
 #if HAS_WORKSPACE_OFFSET || ENABLED(DUAL_X_CARRIAGE) || ENABLED(DELTA)
