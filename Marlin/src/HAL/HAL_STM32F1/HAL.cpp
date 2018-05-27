@@ -217,6 +217,9 @@ void HAL_init(void) {
   //4 razy szybciej
   systick_init((F_CPU/4000) - 1);
 
+  SET_OUTPUT(BLTOUCH_PIN);
+  HAL_timer_start(PWM_TIMER_NUM, PWM_TIMER_FREQUENCY);
+
   /*
   int m = millis();
   while (1) {

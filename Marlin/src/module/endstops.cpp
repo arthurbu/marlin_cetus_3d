@@ -395,7 +395,6 @@ void Endstops::M119() {
 
 // Check endstops - Could be called from ISR!
 void Endstops::update() {
-return;
   #define SET_BIT_TO(N,B,TF) do{ if (TF) SBI(N,B); else CBI(N,B); }while(0)
   // UPDATE_ENDSTOP_BIT: set the current endstop bits for an endstop to its status
   #define UPDATE_ENDSTOP_BIT(AXIS, MINMAX) SET_BIT_TO(live_state, _ENDSTOP(AXIS, MINMAX), (READ(_ENDSTOP_PIN(AXIS, MINMAX)) != _ENDSTOP_INVERTING(AXIS, MINMAX)))
@@ -437,6 +436,7 @@ return;
   /**
    * Check and update endstops according to conditions
    */
+/*
   if (stepper.axis_is_moving(X_AXIS)) {
     if (stepper.motor_direction(X_AXIS_HEAD)) { // -direction
       #if HAS_X_MIN
@@ -498,9 +498,10 @@ return;
       #endif
     }
   }
-
+*/
   if (stepper.axis_is_moving(Z_AXIS)) {
     if (stepper.motor_direction(Z_AXIS_HEAD)) { // Z -direction. Gantry down, bed up.
+      /*
       #if HAS_Z_MIN
         #if ENABLED(Z_DUAL_ENDSTOPS)
           UPDATE_ENDSTOP_BIT(Z, MIN);
@@ -517,13 +518,14 @@ return;
           #endif
         #endif
       #endif
-
+      */
       // When closing the gap check the enabled probe
       #if ENABLED(Z_MIN_PROBE_ENDSTOP)
         if (z_probe_enabled) UPDATE_ENDSTOP_BIT(Z, MIN_PROBE);
       #endif
     }
     else { // Z +direction. Gantry up, bed down.
+      /*
       #if HAS_Z_MAX
         // Check both Z dual endstops
         #if ENABLED(Z_DUAL_ENDSTOPS)
@@ -539,6 +541,7 @@ return;
           UPDATE_ENDSTOP_BIT(Z, MAX);
         #endif
       #endif
+      */
     }
   }
 
@@ -605,6 +608,7 @@ return;
   #endif
 
   // Now, we must signal, after validation, if an endstop limit is pressed or not
+  /*
   if (stepper.axis_is_moving(X_AXIS)) {
     if (stepper.motor_direction(X_AXIS_HEAD)) { // -direction
       #if HAS_X_MIN
@@ -646,10 +650,10 @@ return;
       #endif
     }
   }
-
+ */
   if (stepper.axis_is_moving(Z_AXIS)) {
     if (stepper.motor_direction(Z_AXIS_HEAD)) { // Z -direction. Gantry down, bed up.
-      #if HAS_Z_MIN
+      /*#if HAS_Z_MIN
         #if ENABLED(Z_DUAL_ENDSTOPS)
           PROCESS_DUAL_ENDSTOP(Z, Z2, MIN);
         #else
@@ -660,13 +664,14 @@ return;
           #endif
         #endif
       #endif
-
+*/
       // When closing the gap check the enabled probe
       #if ENABLED(Z_MIN_PROBE_ENDSTOP)
         if (z_probe_enabled) PROCESS_ENDSTOP(Z, MIN_PROBE);
       #endif
     }
     else { // Z +direction. Gantry up, bed down.
+            /*
       #if HAS_Z_MAX
         #if ENABLED(Z_DUAL_ENDSTOPS)
           PROCESS_DUAL_ENDSTOP(Z, Z2, MAX);
@@ -676,6 +681,7 @@ return;
           PROCESS_ENDSTOP(Z, MAX);
         #endif
       #endif
+      */
     }
   }
 } // Endstops::update()

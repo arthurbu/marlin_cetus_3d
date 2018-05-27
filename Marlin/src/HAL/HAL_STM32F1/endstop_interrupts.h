@@ -60,7 +60,8 @@ volatile AxisEnum homing_axis = NO_AXIS;
 void bltouch_callback(void)
 {
     //WRITE(LED_PIN, HIGH);
-    //planner.endstop_triggered(Z_AXIS);
+    planner.endstop_triggered(Z_AXIS);
+    endstops.check_possible_change();
 }
 
 void endstop_systick_callback(void)
@@ -72,6 +73,7 @@ void endstop_systick_callback(void)
         {
             WRITE(LED_PIN, HIGH);
             planner.endstop_triggered(homing_axis);
+            endstops.check_possible_change();
         }
     }
 }
@@ -173,6 +175,7 @@ void setup_endstop_interrupts(void) {
     //attachInterrupt(Z_MAX_PIN, endstop_ISR, RISING);
   #endif
   #if HAS_Z_MIN
+  test
     SET_INPUT(Z_MIN_PIN);
     attachInterrupt(Z_MIN_PIN, endstop_ISR2, RISING);
   #endif

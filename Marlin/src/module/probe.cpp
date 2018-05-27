@@ -515,7 +515,7 @@ static bool do_probe_move(const float z, const float fr_mm_s) {
   do_blocking_move_to_z(z, fr_mm_s);
 
   // Check to see if the probe was triggered
-  bool probe_triggered = TEST(endstops.trigger_state(),
+  const bool probe_triggered = TEST(endstops.trigger_state(),
     #if ENABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
       Z_MIN
     #else
@@ -523,7 +523,7 @@ static bool do_probe_move(const float z, const float fr_mm_s) {
     #endif
   );
 
-probe_triggered = true;
+//probe_triggered = true;
 
   #if QUIET_PROBING
     probing_pause(false);

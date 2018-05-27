@@ -89,6 +89,19 @@ const tTimerConfig TimerConfig [NUM_HARDWARE_TIMERS] = {
  * Timer_clock4: Prescaler 128 -> 562.5  kHz
  */
 
+extern "C" {
+
+    void pwmTC1_Handler(void) {
+        WRITE(BLTOUCH_PIN, HIGH);
+        timer_set_count(PWM_TIMER_DEV, 0);
+    }
+
+    void pwmTC2_Handler(void) {
+        WRITE(BLTOUCH_PIN, LOW);
+    }
+
+}
+
 /**
  * TODO: Calculate Timer prescale value, so we get the 32bit to adjust
  */
@@ -133,7 +146,8 @@ void HAL_timer_start(const uint8_t timer_num, const uint32_t frequency) {
       timer_set_prescaler(PWM_TIMER_DEV, (uint16)(PWM_TIMER_PRESCALE - 1));
       timer_set_reload(PWM_TIMER_DEV, 0xFFFF);
       timer_set_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN, MIN(HAL_TIMER_TYPE_MAX, ((F_CPU / PWM_TIMER_PRESCALE) / frequency)));
-      timer_attach_interrupt(PWM_TIMER_DEV, PWM_TIMER_CHAN, tempTC_Handler);
+      timer_attach_interrupt(PWM_TIMER_DEV, PWM_TIMER_CHAN, pwmTC1_Handler);
+      timer_attach_interrupt(PWM_TIMER_DEV, PWM_TIMER_CHAN + 1, pwmTC2_Handler);
       nvic_irq_set_priority(irq_num, 2);
       timer_generate_update(PWM_TIMER_DEV);
       timer_resume(PWM_TIMER_DEV);
