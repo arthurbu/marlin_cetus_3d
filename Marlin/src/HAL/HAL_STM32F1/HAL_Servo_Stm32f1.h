@@ -26,6 +26,7 @@
 
 #define MAX_SERVOS 1
 
+// Path needed, otherwise HAL version is used
 //#include <../../libraries/Servo/src/Servo.h>
 
 // Inherit and expand on the official library
