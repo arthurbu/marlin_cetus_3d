@@ -46,7 +46,8 @@ void libServo::detach() {
 
 void libServo::write(int angle) {
     this->pos = angle;
-    timer_set_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN + 1, (int)(43.0f+((float)(angle) * 0.757777f)));
+    //timer_set_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN + 1, (int)(43.0f+((float)(angle) * 0.757777f)));
+    timer_set_compare(PWM_TIMER_DEV, PWM_TIMER_CHAN + 1, 600 + angle * 10);
     timer_generate_update(PWM_TIMER_DEV);
 }
 
