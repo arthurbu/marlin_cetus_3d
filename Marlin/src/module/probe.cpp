@@ -502,6 +502,8 @@ static bool do_probe_move(const float z, const float fr_mm_s) {
     }
   #endif
 
+  WRITE(LED_PIN, LOW);
+
   // Deploy BLTouch at the start of any probe
   #if ENABLED(BLTOUCH)
     if (set_bltouch_deployed(true)) return true;

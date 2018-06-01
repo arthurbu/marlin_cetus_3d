@@ -59,7 +59,7 @@ volatile AxisEnum homing_axis = NO_AXIS;
 
 void bltouch_callback(void)
 {
-    //WRITE(LED_PIN, HIGH);
+    WRITE(LED_PIN, HIGH);
     planner.endstop_triggered(Z_AXIS);
     endstops.check_possible_change();
 }
