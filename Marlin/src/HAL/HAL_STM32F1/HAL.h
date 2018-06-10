@@ -163,9 +163,11 @@ extern uint16_t HAL_adc_result;
 
 // Disable interrupts
 #define cli() noInterrupts()
+#define __disable_irq() noInterrupts()
 
 // Enable interrupts
 #define sei() interrupts()
+#define __enable_irq() sei()
 
 // Memory related
 #define __bss_end __bss_end__
