@@ -47,6 +47,11 @@
 
 #if ENABLED(QUICK_HOME)
 
+//CETUS3D
+void detach_endstop_interrupts();
+void attach_endstop_interrupt(AxisEnum axis);
+//CETUS3D
+
   static void quick_home_xy() {
 
     // Pretend the current position is 0,0
@@ -71,9 +76,20 @@
       sensorless_homing_per_axis(Y_AXIS);
     #endif
 
+    WRITE(LED_PIN, LOW);
+
+  //CETUS3D
+  attach_endstop_interrupt(ALL_AXES);
+  //CETUS3D
+
     do_blocking_move_to_xy(1.5 * mlx * x_axis_home_dir, 1.5 * mly * home_dir(Y_AXIS), fr_mm_s);
     endstops.hit_on_purpose(); // clear endstop hit flags
     current_position[X_AXIS] = current_position[Y_AXIS] = 0.0;
+
+    WRITE(LED_PIN, HIGH);
+  //CETUS3D
+  detach_endstop_interrupts();
+  //CETUS3D
 
     #if ENABLED(SENSORLESS_HOMING)
       sensorless_homing_per_axis(X_AXIS, false);

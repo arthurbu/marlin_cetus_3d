@@ -51,7 +51,9 @@
 
 #include "../../module/endstops.h"
 
-volatile uint8_t e_hit;
+volatile uint8_t e_hit_x;
+volatile uint8_t e_hit_y;
+volatile uint8_t e_hit_z;
 
 //CETUS3D
 
@@ -66,13 +68,24 @@ void bltouch_callback(void)
 
 void endstop_systick_callback(void)
 {
-    if (homing_axis != NO_AXIS)
-    {
-        e_hit--;
-        if (!e_hit)
-        {
-            WRITE(LED_PIN, HIGH);
-            planner.endstop_triggered(homing_axis);
+    if (homing_axis == X_AXIS || homing_axis == ALL_AXES) {
+        e_hit_x--;
+        if (!e_hit_x) {
+            planner.endstop_triggered(X_AXIS);
+            endstops.check_possible_change();
+        }
+    }
+    if (homing_axis == Y_AXIS || homing_axis == ALL_AXES) {
+        e_hit_y--;
+        if (!e_hit_y) {
+            planner.endstop_triggered(Y_AXIS);
+            endstops.check_possible_change();
+        }
+    }
+    if (homing_axis == Z_AXIS || homing_axis == ALL_AXES) {
+        e_hit_z--;
+        if (!e_hit_z) {
+            planner.endstop_triggered(Z_AXIS);
             endstops.check_possible_change();
         }
     }
@@ -82,7 +95,9 @@ void endstop_systick_callback(void)
 
 
 // One ISR for all EXT-Interrupts
-void endstop_ISR(void) { e_hit = 6; }
+void endstop_x_ISR(void) { e_hit_x = 6; }
+void endstop_y_ISR(void) { e_hit_y = 6; }
+void endstop_z_ISR(void) { e_hit_z = 6; }
 
 void bltouch_callback(void);
 
@@ -106,35 +121,34 @@ void detach_endstop_interrupts()
 void attach_endstop_interrupt(AxisEnum axis)
 {
   homing_axis = axis;
-  WRITE(LED_PIN, LOW);
 
-  if (axis == X_AXIS)
+  if (axis == X_AXIS || axis == ALL_AXES)
   {
       #if HAS_X_MAX
         SET_INPUT(X_MAX_PIN);
-        attachInterrupt(X_MAX_PIN, endstop_ISR, RISING); // assign it
+        attachInterrupt(X_MAX_PIN, endstop_x_ISR, RISING); // assign it
       #endif
       #if HAS_X_MIN
         SET_INPUT(X_MIN_PIN);
-        attachInterrupt(X_MIN_PIN, endstop_ISR, RISING);
+        attachInterrupt(X_MIN_PIN, endstop_x_ISR, RISING);
       #endif
   }
-  if (axis == Y_AXIS)
+  if (axis == Y_AXIS || axis == ALL_AXES)
   {
       #if HAS_Y_MAX
         SET_INPUT(Y_MAX_PIN);
-        attachInterrupt(Y_MAX_PIN, endstop_ISR, RISING);
+        attachInterrupt(Y_MAX_PIN, endstop_y_ISR, RISING);
       #endif
       #if HAS_Y_MIN
         SET_INPUT(Y_MIN_PIN);
-        attachInterrupt(Y_MIN_PIN, endstop_ISR, RISING);
+        attachInterrupt(Y_MIN_PIN, endstop_y_ISR, RISING);
       #endif
   }
-  if (axis == Z_AXIS)
+  if (axis == Z_AXIS || axis == ALL_AXES)
   {
       #if HAS_Z_MAX
         SET_INPUT(Z_MAX_PIN);
-        attachInterrupt(Z_MAX_PIN, endstop_ISR, RISING);
+        attachInterrupt(Z_MAX_PIN, endstop_z_ISR, RISING);
       #endif
   }
   /*
