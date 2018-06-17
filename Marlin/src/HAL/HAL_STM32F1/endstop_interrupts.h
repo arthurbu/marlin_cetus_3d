@@ -170,39 +170,30 @@ void attach_endstop_interrupt(AxisEnum axis)
 void setup_endstop_interrupts(void) {
   #if HAS_X_MAX
     //attachInterrupt(X_MAX_PIN, endstop_ISR, RISING); // assign it
-    SET_INPUT(X_MAX_PIN);
   #endif
   #if HAS_X_MIN
     //attachInterrupt(X_MIN_PIN, endstop_ISR, RISING);
-    SET_INPUT(X_MIN_PIN);
   #endif
   #if HAS_Y_MAX
     //attachInterrupt(Y_MAX_PIN, endstop_ISR, RISING);
-    SET_INPUT(Y_MAX_PIN);
   #endif
   #if HAS_Y_MIN
     //attachInterrupt(Y_MIN_PIN, endstop_ISR, RISING);
-    SET_INPUT(Y_MIN_PIN);
   #endif
   #if HAS_Z_MAX
     //attachInterrupt(Z_MAX_PIN, endstop_ISR, RISING);
-    SET_INPUT(Z_MAX_PIN);
   #endif
   #if HAS_Z_MIN
     attachInterrupt(Z_MIN_PIN, endstop_ISR2, RISING);
-    SET_INPUT(Z_MIN_PIN);
   #endif
   #if HAS_Z2_MAX
     //attachInterrupt(Z2_MAX_PIN, endstop_ISR, RISING);
-    SET_INPUT(Z2_MAX_PIN);
   #endif
   #if HAS_Z2_MIN
     //attachInterrupt(Z2_MIN_PIN, endstop_ISR, RISING);
-    SET_INPUT(Z2_MIN_PIN);
   #endif
   #if HAS_Z_MIN_PROBE_PIN
     attachInterrupt(Z_MIN_PROBE_PIN, endstop_ISR2, CHANGE);
-    SET_INPUT(Z_MIN_PROBE_PIN);
   #endif
 }
 

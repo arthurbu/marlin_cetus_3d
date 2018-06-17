@@ -40,6 +40,7 @@
 // Externals
 // --------------------------------------------------------------------------
 
+
 // --------------------------------------------------------------------------
 // Types
 // --------------------------------------------------------------------------
@@ -176,7 +177,24 @@ static void NVIC_SetPriorityGrouping(uint32_t PriorityGroup) {
 // --------------------------------------------------------------------------
 // Public functions
 // --------------------------------------------------------------------------
+/*
+static __inline__ uint32_t __get_primask(void) \
+{ uint32_t primask = 0; \
+  __asm__ volatile ("MRS %[result], PRIMASK\n\t":[result]"=r"(primask)::); \
+  return primask; } // returns 0 if interrupts enabled, 1 if disabled
 
+static __inline__ void __set_primask(uint32_t setval) \
+{ __asm__ volatile ("MSR PRIMASK, %[value]\n\t""dmb\n\t""dsb\n\t""isb\n\t"::[value]"r"(setval):); \
+  __asm__ volatile ("" ::: "memory");}
+
+static __inline__ uint32_t __iSeiRetVal(void) \
+{ __asm__ volatile ("CPSIE i\n\t""dmb\n\t""dsb\n\t""isb\n\t"); \
+  __asm__ volatile ("" ::: "memory"); return 1; }
+
+static __inline__ uint32_t __iCliRetVal(void) \
+{ __asm__ volatile ("CPSID i\n\t""dmb\n\t""dsb\n\t""isb\n\t"); \
+  __asm__ volatile ("" ::: "memory"); return 1; }
+*/
 void endstop_systick_callback(void);
 
 #define HAL_TEMP_TIMER_ISR extern "C" void tempTC_Handler(void)

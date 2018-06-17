@@ -40,7 +40,7 @@
 // --------------------------------------------------------------------------
 
 #include <stdint.h>
-#include <libmaple/atomic.h>
+//#include <libmaple/util/atomic.h>
 #include <Arduino.h>
 
 // --------------------------------------------------------------------------
@@ -118,6 +118,23 @@ void HAL_init();
 #ifndef analogInputToDigitalPin
   #define analogInputToDigitalPin(p) (p)
 #endif
+
+static __inline__ uint32_t __get_primask(void) \
+{ uint32_t primask = 0; \
+  __asm__ volatile ("MRS %[result], PRIMASK\n\t":[result]"=r"(primask)::); \
+  return primask; } // returns 0 if interrupts enabled, 1 if disabled
+
+static __inline__ void __set_primask(uint32_t setval) \
+{ __asm__ volatile ("MSR PRIMASK, %[value]\n\t""dmb\n\t""dsb\n\t""isb\n\t"::[value]"r"(setval):); \
+  __asm__ volatile ("" ::: "memory");}
+
+static __inline__ uint32_t __iSeiRetVal(void) \
+{ __asm__ volatile ("CPSIE i\n\t""dmb\n\t""dsb\n\t""isb\n\t"); \
+  __asm__ volatile ("" ::: "memory"); return 1; }
+
+static __inline__ uint32_t __iCliRetVal(void) \
+{ __asm__ volatile ("CPSID i\n\t""dmb\n\t""dsb\n\t""isb\n\t"); \
+  __asm__ volatile ("" ::: "memory"); return 1; }
 
 #define CRITICAL_SECTION_START  uint32_t primask = __get_primask(); (void)__iCliRetVal()
 #define CRITICAL_SECTION_END    if (!primask) (void)__iSeiRetVal()
