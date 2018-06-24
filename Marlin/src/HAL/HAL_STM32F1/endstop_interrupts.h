@@ -68,25 +68,28 @@ void bltouch_callback(void)
 
 void endstop_systick_callback(void)
 {
-    if (homing_axis == X_AXIS || homing_axis == ALL_AXES) {
-        e_hit_x--;
-        if (!e_hit_x) {
-            planner.endstop_triggered(X_AXIS);
-            endstops.update();
+    if (homing_axis != NO_AXIS)
+    {
+        if (homing_axis == X_AXIS || homing_axis == ALL_AXES) {
+            e_hit_x--;
+            if (!e_hit_x) {
+                planner.endstop_triggered(X_AXIS);
+                endstops.update();
+            }
         }
-    }
-    if (homing_axis == Y_AXIS || homing_axis == ALL_AXES) {
-        e_hit_y--;
-        if (!e_hit_y) {
-            planner.endstop_triggered(Y_AXIS);
-            endstops.update();
+        if (homing_axis == Y_AXIS || homing_axis == ALL_AXES) {
+            e_hit_y--;
+            if (!e_hit_y) {
+                planner.endstop_triggered(Y_AXIS);
+                endstops.update();
+            }
         }
-    }
-    if (homing_axis == Z_AXIS || homing_axis == ALL_AXES) {
-        e_hit_z--;
-        if (!e_hit_z) {
-            planner.endstop_triggered(Z_AXIS);
-            endstops.update();
+        if (homing_axis == Z_AXIS || homing_axis == ALL_AXES) {
+            e_hit_z--;
+            if (!e_hit_z) {
+                planner.endstop_triggered(Z_AXIS);
+                endstops.update();
+            }
         }
     }
 }
