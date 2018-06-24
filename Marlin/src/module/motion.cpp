@@ -1078,6 +1078,10 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
     }
   #endif
 
+  //CETUS3D
+  attach_endstop_interrupt(axis);
+  //CETUS3D
+
   // Only do some things when moving towards an endstop
   const int8_t axis_home_dir =
     #if ENABLED(DUAL_X_CARRIAGE)
@@ -1120,6 +1124,10 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
   #endif
 
   planner.synchronize();
+
+  //CETUS3D
+  detach_endstop_interrupts();
+  //CETUS3D
 
   if (is_home_dir) {
 
@@ -1294,18 +1302,11 @@ void homeaxis(const AxisEnum axis) {
     home_dir(axis)
   );
 
-  //CETUS3D
-  attach_endstop_interrupt(axis);
-  //CETUS3D
-
   // Homing Z towards the bed? Deploy the Z probe or endstop.
   #if HOMING_Z_WITH_PROBE
-    //CETUS3D
     if (axis == Z_AXIS && DEPLOY_PROBE()) {
-        detach_endstop_interrupts();
         return;
     }
-    //CETUS3D
   #endif
 
   // Set flags for X, Y, Z motor locking
@@ -1329,6 +1330,7 @@ void homeaxis(const AxisEnum axis) {
   #if ENABLED(DEBUG_LEVELING_FEATURE)
     if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPGM("Home 1 Fast:");
   #endif
+
   do_homing_move(axis, 1.5 * max_length(axis) * axis_home_dir);
 
   // When homing Z with probe respect probe clearance
@@ -1355,6 +1357,7 @@ void homeaxis(const AxisEnum axis) {
     #if ENABLED(DEBUG_LEVELING_FEATURE)
       if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPGM("Home 2 Slow:");
     #endif
+
     do_homing_move(axis, 2 * bump, get_homing_bump_feedrate(axis));
   }
 
@@ -1426,12 +1429,9 @@ void homeaxis(const AxisEnum axis) {
 
   // Put away the Z probe
   #if HOMING_Z_WITH_PROBE
-    //CETUS3D
     if (axis == Z_AXIS && STOW_PROBE()) {
-        detach_endstop_interrupts();
         return;
     }
-    //CETUS3D
   #endif
 
   // Clear retracted status if homing the Z axis
@@ -1446,10 +1446,6 @@ void homeaxis(const AxisEnum axis) {
       SERIAL_EOL();
     }
   #endif
-
-  //CETUS3D
-  detach_endstop_interrupts();
-  //CETUS3D
 } // homeaxis()
 
 #if HAS_WORKSPACE_OFFSET || ENABLED(DUAL_X_CARRIAGE) || ENABLED(DELTA)
